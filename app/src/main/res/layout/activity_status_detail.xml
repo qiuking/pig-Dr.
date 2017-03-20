@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.ustcerqiu.pigdoc.MainActivity"
+    android:id="@+id/main_activity_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/main_bg">
+
+    <!--插入标题栏2-->
+    <include layout="@layout/title_2"/>
+
+    <!-- 中间内容部分框架 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:background="@drawable/main2_bg">
+        <LinearLayout  android:id="@+id/group_pics_tables"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+            <!--第一个图位置-->
+            <!--
+            <LinearLayout android:id="@+id/collect_bars_linear_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="8dp"
+                android:paddingTop="6dp"
+                android:paddingLeft="6dp"
+                android:paddingRight="6dp"
+                android:paddingBottom="6dp"
+                android:orientation="vertical"
+                android:background="@drawable/bg_div">
+                <TextView android:id="@+id/bars_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
+                    android:textSize="18sp"
+                    android:textColor="@color/colorPrimary_text"
+                    android:gravity="center"
+                    android:text="xxx构"
+                    android:background="#fff"
+                    android:layout_marginBottom="3dp"
+                    android:layout_marginTop="1dp"/>
+            </LinearLayout>
+            -->
+            <!--第一个表的位置-->
+
+
+        </LinearLayout>
+    </ScrollView>  <!--里面只能有一个控件-->
+    <!--无底部导航栏的状态-->
+</LinearLayout>

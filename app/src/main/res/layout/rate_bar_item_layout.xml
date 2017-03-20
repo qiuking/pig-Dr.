@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/rate_bar"
+    android:layout_height="wrap_content"
+    android:minHeight="25dp"
+    android:layout_width="match_parent"
+    android:orientation="horizontal"
+    android:layout_marginBottom="1dp"
+    android:gravity="start|center"
+    android:background="#fff">
+
+    <TextView  android:id="@+id/bar_name"
+        android:layout_width="86dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorPrimary_text"
+        android:textSize="14sp"
+        android:gravity="end"/>
+
+    <TextView   android:id="@+id/bar_rate_percent"
+        android:layout_width="50dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/colorAccent1"
+        android:gravity="end"
+        android:layout_marginRight="1dp"/>
+
+    <View android:layout_width="2dp"  android:layout_height="match_parent" android:background="#77B2DFDB"/>
+
+    <ImageView  android:id="@+id/bar_rate"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="10dp"
+        android:layout_marginLeft="1dp"
+        android:src="@drawable/rate_unclip_1"
+        android:textSize="12sp"
+        android:background="@drawable/rate_clip" />
+
+    <View android:layout_width="1px"  android:layout_height="match_parent" android:background="#77B2DFDB"/>
+
+    <TextView  android:id="@+id/bar_info"
+        android:layout_width="1dp"
+        android:textSize="12sp"
+        android:layout_height="wrap_content"
+        android:gravity="center"/>
+
+
+</LinearLayout>
+
+
+
+
+
