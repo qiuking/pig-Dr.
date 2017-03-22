@@ -3,6 +3,7 @@ package com.ustcerqiu.pigdoc;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 
 //this activity deals with the intents of check the record date
@@ -13,10 +14,11 @@ public class CheckRecordActivity extends BaseClass implements View.OnClickListen
 
     ///////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     //This method is to define the interface (the parameters needed) to start this activity.
-    public void actionStart(Context context){
+    static public void actionStart(Context context, String titleName){
         Intent intent = new Intent(context, CheckRecordActivity.class);
         //define the parameters needed to be transfer to this activity
-        //TODO
+        intent.putExtra("titleName", titleName);
+        //TODO the others
         context.startActivity(intent);
     }//actionsStart
 
@@ -33,5 +35,15 @@ public class CheckRecordActivity extends BaseClass implements View.OnClickListen
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_check_record);
-    }
-}
+        //deal with the intent
+        String titleName = "猪博士"; //the default name
+        Intent intent = getIntent(); //Try to get the intent
+        if(intent != null){
+            titleName = intent.getStringExtra("titleName");
+        }
+        Log.e("qiuking", "onCreate: "+titleName );
+
+
+
+    }//onCreate
+}//end

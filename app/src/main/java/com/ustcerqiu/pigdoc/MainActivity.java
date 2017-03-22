@@ -26,7 +26,7 @@ public class MainActivity extends BaseClass implements View.OnClickListener{
 
     //布局中各种按钮的 id ，并设置点击后动作（进度条，常用功能，输入功能)
     private final int[] statusButtonIds = {R.id.main_status_1, R.id.main_status_2, R.id.main_status_3, R.id.main_status_4, R.id.main_status_5, R.id.main_status_6};
-    private final int[] commonButtonIds = {R.id.main_icon_daily_report, R.id.main_icon_pig_statistics, R.id.main_icon_data_view,  R.id.main_icon_settings };
+    private final int[] commonButtonIds = {R.id.main_icon_daily_report, R.id.main_icon_pig_statistics, R.id.main_icon_check_record,  R.id.main_icon_settings };
     private final int[] inputButtonIds = {R.id.main_data_input0, R.id.main_data_input1, R.id.main_data_input2, R.id.main_data_input3, R.id.main_data_input4,
             R.id.main_data_input5, R.id.main_data_input6, R.id.main_data_input7, R.id.main_data_input8, R.id.main_data_input10};
 
@@ -44,6 +44,7 @@ public class MainActivity extends BaseClass implements View.OnClickListener{
                 StatusDetailActivity.actionStart(MainActivity.this, "存栏状态");
                 break;
             case R.id.main_icon_check_record:  //档案查看按钮
+                CheckRecordActivity.actionStart(MainActivity.this, "档案信息查看");  //launch the activity
                 break;
             default:
                 ViewGroup vp = (ViewGroup) v;

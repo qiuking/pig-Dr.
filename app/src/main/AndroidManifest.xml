@@ -15,7 +15,6 @@
             android:theme="@style/AppTheme.Fullscreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
@@ -76,9 +75,10 @@
         <activity
             android:name=".InputListActivity"
             android:screenOrientation="portrait" />
+
+
         <activity android:name=".StatusDetailActivity" />
-        <activity android:name=".CheckRecord" />
-        <activity android:name=".CheckRecordActiticy"></activity>
+        <activity android:name=".CheckRecordActivity"></activity>
     </application>
 
 </manifest>
