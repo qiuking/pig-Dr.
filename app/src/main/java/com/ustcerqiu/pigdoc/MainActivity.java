@@ -46,6 +46,9 @@ public class MainActivity extends BaseClass implements View.OnClickListener{
             case R.id.main_icon_check_record:  //档案查看按钮
                 CheckRecordActivity.actionStart(MainActivity.this, "档案信息查看");  //launch the activity
                 break;
+            case R.id.main_icon_daily_report:  //daily report --> notes
+                startActivity(new Intent(MainActivity.this, NotesActivity.class));  //launch the notes activity
+                break;
             default:
                 ViewGroup vp = (ViewGroup) v;
                 String toastMassage = "你点击了： " + ((TextView)vp.getChildAt(1)).getText();

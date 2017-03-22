@@ -7,7 +7,7 @@ import android.util.Log;
 import android.view.View;
 
 //this activity deals with the intents of check the record date
-public class CheckRecordActivity extends BaseClass implements View.OnClickListener {
+public class CheckRecordActivity extends BaseMinorClass implements View.OnClickListener {
     //属性区域
     //
     //

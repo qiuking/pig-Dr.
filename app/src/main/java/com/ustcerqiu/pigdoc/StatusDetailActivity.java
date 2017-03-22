@@ -13,7 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatusDetailActivity extends BaseClass {
+public class StatusDetailActivity extends BaseMinorClass {
     //属性区域
     //mCom.mRateBarData barData;
     //
@@ -78,7 +78,7 @@ public class StatusDetailActivity extends BaseClass {
         for(int i=0; i<rowNum; i++){
             row = new ArrayList<>();
             for(int j=0; j<columnNum; j++){
-                row.add(String.format("%3.1f",Math.random()*100));
+                row.add(String.format("%.1f",Math.random()*100));
             }
             tableData.add(row);
         }//for

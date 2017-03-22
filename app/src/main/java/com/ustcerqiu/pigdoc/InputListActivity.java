@@ -19,7 +19,7 @@ import android.widget.TextView;
 import java.io.Serializable;
 import java.util.List;
 
-public class InputListActivity extends BaseClass {
+public class InputListActivity extends BaseMinorClass {
     //属性区域
     //定义 数组用以保存 传递过来的 子项数据
     private mCom.ParcelableItem[] itemList; //parcelable属性在本页面内并没作用; 此处是为了保存intent中数据方便

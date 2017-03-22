@@ -16,7 +16,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatusActivity extends BaseClass {
+public class StatusActivity extends BaseMinorClass {
     //定义所需的属性
     private ItemData[] itemList; //保存所需要的列表功能数据
 
