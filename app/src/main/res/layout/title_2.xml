@@ -2,11 +2,13 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/TitleStyle"
     android:orientation="horizontal">
+
     <LinearLayout android:id="@+id/button_back"
         style="@style/BgPressed"
         android:layout_width="48dp"
         android:layout_height="40dp"
         android:paddingLeft="3dp"
+        android:orientation="horizontal"
         android:gravity="left|center">
         <ImageView
             android:layout_marginTop="1dp"

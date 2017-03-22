@@ -78,7 +78,7 @@
 
 
         <activity android:name=".StatusDetailActivity" />
-        <activity android:name=".CheckRecordActivity"></activity>
+        <activity android:name=".CheckRecordActivity" android:windowSoftInputMode="adjustPan|stateHidden"/>
     </application>
 
 </manifest>

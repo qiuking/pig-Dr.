@@ -5,6 +5,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import java.util.ArrayList;
+import java.util.List;
 
 //this activity deals with the intents of check the record date
 public class CheckRecordActivity extends BaseMinorClass implements View.OnClickListener {
@@ -26,8 +32,16 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
     //this deals with the whole onClick actions in this page/view;
     @Override
     public void onClick(View v) {
+        switch (v.getId()){
+            case R.id.button_back:
+                finish(); //
+                overridePendingTransition(R.anim.translate_in_back, R.anim.translate_out_back);  //添加返回切换动画
+                break;
+            default:
+                break;
+        }
 
-    }
+    }//onClick
 
 
     ///--##############################################################################-----/////
@@ -41,9 +55,20 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         if(intent != null){
             titleName = intent.getStringExtra("titleName");
         }
-        Log.e("qiuking", "onCreate: "+titleName );
+        //设置标题行的显示标题，替换掉layout中的默认标题
+        ((TextView) this.findViewById(R.id.title_name_textView)).setText(titleName);  //this仅仅是强调本活动的调用环境
+
+        //spinner selector
+        List<String> spinnerList = new ArrayList<>();
+        String[] spinnerItems = {"王晶晶", "王二精", "2晶晶", "6各日", "晶晶王"};
+        Spinner spinner = (Spinner) findViewById(R.id.spinner1);
+        for(String item : spinnerItems) spinnerList.add(item);
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerList);
+        spinner.setAdapter(adapter);
 
 
+        //setOnClickListener (whole page)
+        (findViewById(R.id.button_back)).setOnClickListener(this);
 
     }//onCreate
 }//end

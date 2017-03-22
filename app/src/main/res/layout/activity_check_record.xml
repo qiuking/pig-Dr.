@@ -11,12 +11,64 @@
     <!--插入标题栏2-->
     <include layout="@layout/title_2"/>
 
+    <!--search and select category-->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_margin="3dp"
+        android:padding="3dp"
+        android:background="@drawable/bg_div">
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="4"
+            android:layout_height="44dp"
+            android:orientation="horizontal"
+            android:gravity="start|center"
+            android:background="@drawable/div_rectangle_grid">
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginLeft="8dp"
+                android:src="@drawable/search"/>
+            <EditText android:id="@+id/search_keywords"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:lines="1"
+                android:gravity="start|center"
+                android:paddingLeft="8dp"
+                android:background="@null"
+                android:textSize="@dimen/normal_text"
+                android:textColor="@color/colorPrimary_text"
+                android:hint="耳标/猪舍"/>
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_weight="3"
+            android:layout_height="match_parent"
+            android:orientation="horizontal"
+            android:layout_marginLeft="2dp"
+            android:gravity="start|center"
+            android:background="@drawable/div_rectangle_grid">
+            <Spinner android:id="@+id/spinner1"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:dropDownVerticalOffset="44dp">
+
+            </Spinner>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
+
     <!-- 中间内容部分框架 -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/input_list_RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="6dp">
+        android:padding="3dp">
     </android.support.v7.widget.RecyclerView>
 
     <!--无底部导航栏的状态-->
