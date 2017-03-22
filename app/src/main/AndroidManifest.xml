@@ -76,7 +76,9 @@
         <activity
             android:name=".InputListActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".StatusDetailActivity"></activity>
+        <activity android:name=".StatusDetailActivity" />
+        <activity android:name=".CheckRecord" />
+        <activity android:name=".CheckRecordActiticy"></activity>
     </application>
 
 </manifest>

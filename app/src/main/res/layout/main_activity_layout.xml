@@ -269,7 +269,7 @@
                         android:layout_height="wrap_content"
                         android:text="@string/pig_statistics"/>
                 </LinearLayout>
-                <LinearLayout android:id="@+id/main_icon_data_view"
+                <LinearLayout android:id="@+id/main_icon_check_record"
                     style="@style/BgPressed.MainCommon_LinearLayout">
                     <ImageView
                         style="@style/MainCommon_LinearLayout_ImageView"

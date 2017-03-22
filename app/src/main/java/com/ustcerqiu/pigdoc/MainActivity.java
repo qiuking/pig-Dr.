@@ -43,6 +43,8 @@ public class MainActivity extends BaseClass implements View.OnClickListener{
             case R.id.main_icon_pig_statistics:  //存栏状态按钮
                 StatusDetailActivity.actionStart(MainActivity.this, "存栏状态");
                 break;
+            case R.id.main_icon_check_record:  //档案查看按钮
+                break;
             default:
                 ViewGroup vp = (ViewGroup) v;
                 String toastMassage = "你点击了： " + ((TextView)vp.getChildAt(1)).getText();
