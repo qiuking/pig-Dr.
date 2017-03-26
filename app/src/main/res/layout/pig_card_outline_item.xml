@@ -3,7 +3,7 @@
     android:id="@+id/pig_card_outline"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="3dp"
+    android:layout_margin="1dp"
     android:padding="3dp"
     android:background="@drawable/bg_div2"
     android:orientation="vertical">

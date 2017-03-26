@@ -68,24 +68,17 @@
                 android:src="@drawable/down_black"/>
 
         </LinearLayout>
-
-
-
     </LinearLayout>
 
+    <View android:background="#77FFFFFF" android:layout_marginLeft="16dp" android:layout_marginRight="16dp" android:layout_width="match_parent" android:layout_height="1dp"  />
     <!-- 中间内容部分框架 -->
-
-
-
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/input_list_RecyclerView"
+        android:id="@+id/pig_cards_list_RecyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:padding="3dp">
+        android:padding="2dp"
+        android:layout_marginTop="1dp">
     </android.support.v7.widget.RecyclerView>
-
-
-
 
     <!--无底部导航栏的状态-->
 </LinearLayout>
