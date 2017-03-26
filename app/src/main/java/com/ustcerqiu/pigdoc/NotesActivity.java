@@ -38,7 +38,7 @@ public class NotesActivity extends BaseClass {
 
     //定义adapter，继承通用adapter，实现数据处理
     private class mAdapter extends mCom.comListAdapter<ItemData>{
-        //父类中有的参数为 private List<T> mItemList 和 private int itemLayoutId; 也可以用
+        //父类中有的参数为 private List<T> mItemList 和 private int itemLayoutId; 注意itemLayoutId的赋值
         //定义需要保留的属性; 需要为每一个子项都保留此数据，adapter只有一个，holder有不少 且和数据条目数不同
         //无法得知是几项，所以使用list
         private List<TextView> itemMarkList = new ArrayList<>(); //必须初始化，在一个adapter实例化时

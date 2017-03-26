@@ -48,10 +48,39 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
             default:
                 break;
         }
-
     }//onClick
 
 
+    //define the data class and the RecycleView adapter for the pig information card outlines.
+    //the data needed
+    public class pigCard{
+        String number, sex, type, numYear, birthday, house, status, otherInfo;
+        //public pigCard(){ } //是否有默认无参数构造函数
+        public pigCard(String number, String sex, String type, String numYear, String birthday, String house, String status, String otherInfo){
+            this.number = number;
+            this.sex = sex;
+            this.type = type;
+            this.numYear = numYear;
+            this.birthday = birthday;
+            this.house = house;
+            this.status = status;
+            this.otherInfo = otherInfo;
+        }
+    }//pigCard
+/*
+    //the adapter for the pigCard list
+    public class pigCardAadpter extends mCom.comListAdapter<pigCard>{
+        // the private List<T> mItemList 和 private int itemLayoutId  is in the parent；注意在构造函数中 itemLayoutId的赋值
+        //unKnown the number of the holders, so use the list to store the listview holder content.
+
+        //////////////////////////////////////
+        //构造方法. set the data and the layout
+        public pigCardAadpter(List<pigCard> pigCardList, int pigCardLayoutId){
+            super(pigCardList, pigCardLayoutId);
+        }
+    }//pigCardAdapter
+
+*/
     ///--##############################################################################-----/////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,14 +95,14 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         //设置标题行的显示标题，替换掉layout中的默认标题
         ((TextView) this.findViewById(R.id.title_name_textView)).setText(titleName);  //this仅仅是强调本活动的调用环境
 
-        //spinner selector
+     /*   //spinner selector
         List<String> spinnerList = new ArrayList<>();
         String[] spinnerItems = {"王晶晶", "王二精", "2晶晶", "6各日", "晶晶王"};
         Spinner spinner = (Spinner) findViewById(R.id.spinner1);
         for(String item : spinnerItems) spinnerList.add(item);
         ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, android.R.layout.simple_spinner_dropdown_item, spinnerList);
         spinner.setAdapter(adapter);
-
+*/
         Dialog dialog = new Dialog(this, R.style.mDialogTheme); // theme
         dialog.setContentView(R.layout.alert_dialog_1);
         //dialog.setTitle("wokao");
