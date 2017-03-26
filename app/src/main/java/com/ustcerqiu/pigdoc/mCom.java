@@ -1,5 +1,7 @@
 package com.ustcerqiu.pigdoc;
 
+import android.app.Activity;
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ClipDrawable;
@@ -7,16 +9,21 @@ import android.os.Handler;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.v7.widget.RecyclerView;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.AccelerateDecelerateInterpolator;
 import android.view.animation.Animation;
 import android.view.animation.AnimationSet;
 import android.view.animation.TranslateAnimation;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.NumberPicker;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +31,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
+
+import cn.carbswang.android.numberpickerview.library.NumberPickerView;
 
 /**
  * Created by ustcerQ on 2017/3/12.
@@ -575,7 +584,69 @@ public class mCom {
 
 
 //################# 功能块8 ####################
-//定义一 类，实现弹出选择对话框的功能
+//定义一method，输出一个Dialog dialog，实现弹出底部滚动选择对话框的功能
+    //displayValues 用以替换默认的选项数字，选择结果仍是数字，但界面显示为设置的字符串
+    //defaultPostion 用以标识打开时候定位所在，默认所处的位置
+    static public Dialog generateBottomNumpickerDialog(Activity activity, String[] displayValues, int defaultPosition){
+        Dialog dialog = new Dialog(activity, R.style.mDialogTheme); // generate the dialog theme
+        dialog.setContentView(R.layout.dialog_1);  //set layout file
+        dialog.setCanceledOnTouchOutside(false);  //can not be canceled by click on outside space
+        dialog.show();
+        Window dialogWindow = dialog.getWindow();
+        WindowManager.LayoutParams layoutParams = dialogWindow.getAttributes();
+        DisplayMetrics dm = new DisplayMetrics();
+        activity.getWindowManager().getDefaultDisplay().getMetrics(dm);
+        layoutParams.width = dm.widthPixels;
+        dialogWindow.setAttributes(layoutParams);
+        dialogWindow.getDecorView().setPadding(0,0,0,0); //占满控件
+        dialogWindow.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM); //布局位置
+
+    /*    NumberPicker valuePicker = (NumberPicker) dialogWindow.findViewById(R.id.num_picker);  //注意在dialogWindow中找，否则找不到出错
+        valuePicker.setFormatter(new NumberPicker.Formatter() {
+            @Override
+            public String format(int value) {
+                return ""+value;
+            }
+        });
+        valuePicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
+            @Override
+            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
+                //TODO
+            }
+        });
+        valuePicker.setOnScrollListener(new NumberPicker.OnScrollListener() {
+            @Override
+            public void onScrollStateChange(NumberPicker view, int scrollState) {
+                switch(scrollState){
+                    case NumberPicker.OnScrollListener.SCROLL_STATE_FLING: //滑动惯性过程种
+                        break;
+                    case NumberPicker.OnScrollListener.SCROLL_STATE_IDLE: //没滑动
+                        break;
+                    case NumberPicker.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL: //触摸滑动中
+                        break;
+                    default:
+                        break;
+                }
+            }
+        });
+        valuePicker.setDisplayedValues(displayValues);
+        valuePicker.setMinValue(0);
+        valuePicker.setMaxValue(displayValues.length-1);
+        valuePicker.setValue(defaultPosition);
+        valuePicker.setWrapSelectorWheel(false);  //是否循环
+        valuePicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS); //避免点击后可修改状态
+        //dialog.cancel();
+        */
+
+        NumberPickerView valuePicker = (NumberPickerView) dialogWindow.findViewById(R.id.number_picker_view);
+        valuePicker.setDisplayedValues(displayValues);
+        valuePicker.setMinValue(0);
+        valuePicker.setMaxValue(displayValues.length-1);
+        valuePicker.setValue(0);
+
+
+        return dialog;
+    }// generateBottomNumpickerDialog
 
 
 

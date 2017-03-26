@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:textSize="@dimen/normal_text"
             android:textColor="@color/colorPrimary_text"
-            android:text="123456789"/>
+            android:text="."/>
         <TextView
             android:layout_width="130dp"
             android:gravity="right"
@@ -52,7 +52,7 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:textSize="@dimen/normal_2_text"
-            android:text="母猪"/>
+            android:text="."/>
         <TextView
             android:layout_width="54dp"
             android:layout_height="wrap_content"
@@ -63,7 +63,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/normal_2_text"
-            android:text="长白类（LY）"/>
+            android:text="."/>
     </LinearLayout>
     <!--第3行，具体信息2-->
     <LinearLayout
@@ -81,7 +81,7 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:textSize="@dimen/normal_2_text"
-            android:text="3胎"/>
+            android:text="."/>
         <TextView
             android:layout_width="54dp"
             android:layout_height="wrap_content"
@@ -92,7 +92,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/normal_2_text"
-            android:text="2017年03月26日am"/>
+            android:text="."/>
     </LinearLayout>
     <!--第4行，具体信息3-->
     <LinearLayout
@@ -110,7 +110,7 @@
             android:layout_width="120dp"
             android:layout_height="wrap_content"
             android:textSize="@dimen/normal_2_text"
-            android:text="母猪109栋"/>
+            android:text="."/>
         <TextView
             android:layout_width="54dp"
             android:layout_marginLeft="4dp"
@@ -121,7 +121,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/normal_2_text"
-            android:text="怀孕100天，待产"/>
+            android:text="."/>
     </LinearLayout>
     <!--第5行，具体信息4-->
     <LinearLayout
@@ -141,7 +141,7 @@
             android:textSize="@dimen/normal_2_text"
             android:layout_marginBottom="1dp"
             android:textColor="@color/colorPrimaryDark"
-            android:text="空怀两次，生病中，疫苗待打，待产"/>
+            android:text="."/>
     </LinearLayout>
 
 

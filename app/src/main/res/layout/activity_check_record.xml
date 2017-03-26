@@ -43,6 +43,7 @@
                 android:hint="耳标/猪舍"/>
         </LinearLayout>
         <LinearLayout android:id="@+id/group_selected"
+            android:clickable="true"
             android:layout_width="0dp"
             android:layout_weight="4"
             android:layout_height="match_parent"
@@ -50,7 +51,7 @@
             android:layout_marginLeft="2dp"
             android:gravity="start|center"
             android:background="@drawable/div_rectangle_grid">
-            <TextView
+            <TextView android:id="@+id/group_selected_text"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="match_parent"
@@ -59,7 +60,7 @@
                 android:background="@null"
                 android:textSize="@dimen/normal_text"
                 android:textColor="@color/colorPrimary_text"
-                android:hint="全  部"/>
+                android:text="全  部"/>
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="24dp"

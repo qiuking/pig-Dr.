@@ -29,5 +29,7 @@ dependencies {
     compile 'com.android.support:design:25.1.0'
     //添加RecycleView的支持库
     compile 'com.android.support:recyclerview-v7:25.1.0'
+    //添加github上的 NumberPickerView
+    compile 'cn.carbswang.android:NumberPickerView:1.1.1'
     testCompile 'junit:junit:4.12'
 }
