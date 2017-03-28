@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Parcelable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.view.ActionMode;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
@@ -16,7 +17,7 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.List;
 
-public class StatusDetailActivity extends BaseMinorClass {
+public class StatusDetailActivity extends BaseMinorClass{
     //属性区域
     //mCom.mRateBarData barData;
     //
@@ -30,30 +31,13 @@ public class StatusDetailActivity extends BaseMinorClass {
         context.startActivity(intent);
     }
 
-    //定义获取单个图的数据的方法
-    private List<mCom.mRateBarData> getBarDataList(){
-        List<mCom.mRateBarData> dataList = new ArrayList<>();
-        mCom.mRateBarData barData;
-        //TODO
-        int num = 6;
-        for(int i=0; i<num+1; i++){
-            barData = new mCom.mRateBarData("胎龄"+i+"年", ((int)(Math.random()*1001))/1000.0, "王二晶晶"  );
-            dataList.add(barData);
-        }
-        return dataList;
-    }//getBarDataList
 
     //定义获取 多个图 的数据方法
     private List<mCom.HorizontalRateBar> getBarPicDataList(){
         List<mCom.HorizontalRateBar> picList = new ArrayList<>();
-        //TODO
-//        List<mCom.mRateBarData> barDataList;
         mCom.HorizontalRateBar pic;
-//        for(int i=0; i<2; i++){
-//            barDataList = getBarDataList(); //获取一张图
-            pic = new mCom.HorizontalRateBar( dataList, "养殖场", true ); //true显示标题
-            picList.add(pic);
-//        }
+        pic = new mCom.HorizontalRateBar( dataList, "养殖场", true ); //true显示标题
+        picList.add(pic);
         return picList ;
     } //getBarPicDataList
 
@@ -90,6 +74,54 @@ public class StatusDetailActivity extends BaseMinorClass {
         return tablePic;
     }//getSingleTableData
 
+
+    //parse the data from internet to dataList
+    private void parseGestationalAge(String jsonData){
+        try{
+            JSONObject jsonObject = new JSONObject(jsonData);
+            String gestational_age_reports = jsonObject.getString("gestational_age_reports");
+            JSONArray jsonArray = new JSONArray(gestational_age_reports);
+            dataList = new ArrayList<>();
+            mCom.mRateBarData barData;
+
+            for(int i=0;i<jsonArray.length();i++)
+            {
+                jsonObject = jsonArray.getJSONObject(i);
+                int gestational_age = jsonObject.getInt("gestational_age");
+                int count = jsonObject.getInt("count");
+                double rate = jsonObject.getDouble("rate");
+                barData = new mCom.mRateBarData("胎龄" + gestational_age + "年", rate, "");
+                Log.e("boar", "胎龄" + gestational_age + "年"+ rate);
+                dataList.add(barData);
+            }
+
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }//
+
+
+    //show the results to view
+    private void showResponse(final String response, final LinearLayout picTableGroup){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                parseGestationalAge(response);
+                // 一组图加入
+                // LinearLayout picTableGroup;
+                List<mCom.HorizontalRateBar> picList = getBarPicDataList();
+                for (mCom.HorizontalRateBar pic : picList) {
+                    pic.insertInto(picTableGroup, true); //使用动画true
+                }
+
+                //insert tables
+                for (int i = 0; i < 2; i++) { //control the number of the tables
+                    getSingleTableData().insertTableTo(picTableGroup);   //sample of how to use the table insert method
+                }
+            }
+        });
+    }//
+
  ///--##############################################################################-----/////
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -115,22 +147,15 @@ public class StatusDetailActivity extends BaseMinorClass {
             }
         });
 
+        //处理中间部分
+
+
         String address = "http://180.76.148.62:8888/v1/gestational_age_reports";
         HttpUtil.sendHttpRequest(address, new com.ustcerqiu.pigdoc.HttpCallbackListener() {
             @Override
-            public void onFinish(String response) {
-                parseGestationalAge(response);
-                // 一组图加入
+            public void onFinish(String response) { //主线程中运行
                 LinearLayout picTableGroup = (LinearLayout) findViewById(R.id.group_pics_tables);
-                List<mCom.HorizontalRateBar> picList = getBarPicDataList();
-                for (mCom.HorizontalRateBar pic : picList) {
-                    pic.insertInto(picTableGroup, true); //使用动画true
-                }
-
-                //insert tables
-                for (int i = 0; i < 2; i++) { //control the number of the tables
-                    getSingleTableData().insertTableTo(picTableGroup);   //sample of how to use the table insert method
-                }
+                showResponse(response, picTableGroup);//
             }
 
             @Override
@@ -140,30 +165,9 @@ public class StatusDetailActivity extends BaseMinorClass {
         });
 
 
+
+
     }//onCreate
 
-    private void parseGestationalAge(String jsonData){
-        try{
-            JSONObject jsonObject = new JSONObject(jsonData);
-            String gestational_age_reports = jsonObject.getString("gestational_age_reports");
-            JSONArray jsonArray = new JSONArray(gestational_age_reports);
-            dataList = new ArrayList<>();
-            mCom.mRateBarData barData;
-
-            for(int i=0;i<jsonArray.length();i++)
-            {
-                jsonObject = jsonArray.getJSONObject(i);
-                int gestational_age = jsonObject.getInt("gestational_age");
-                int count = jsonObject.getInt("count");
-                double rate = jsonObject.getDouble("rate");
-                barData = new mCom.mRateBarData("胎龄" + gestational_age + "年", rate, "王二晶晶");
-                Log.e("boar", "胎龄" + gestational_age + "年"+ rate);
-                dataList.add(barData);
-            }
-
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-    }
 
 }//end activity
