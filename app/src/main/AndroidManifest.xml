@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.ustcerqiu.pigdoc">
-
+    <uses-permission android:name="android.permission.INTERNET"/>
     <!-- -程序的api sdk版本兼容性，在gradle文件中 -->
     <application
         android:allowBackup="true"
