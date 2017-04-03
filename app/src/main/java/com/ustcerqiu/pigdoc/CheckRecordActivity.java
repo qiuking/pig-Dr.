@@ -6,9 +6,15 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +23,7 @@ import java.util.List;
 public class CheckRecordActivity extends BaseMinorClass implements View.OnClickListener {
     //属性区域
     //
+    private List<PigCard> pigCardList;
     //
 
     ///////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -116,6 +123,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
 
 
     //method to get data need to generate the list
+    /*
     public List<PigCard> getPigCardList(){
         //TODO 完成获取数据的方法
         List<PigCard> pigCardList = new ArrayList<>();
@@ -126,6 +134,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         }
         return pigCardList;
     }// getPigCarList
+    */
 
 
 
@@ -143,29 +152,71 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         //设置标题行的显示标题，替换掉layout中的默认标题
         ((TextView) this.findViewById(R.id.title_name_textView)).setText(titleName);  //this仅仅是强调本活动的调用环境
 
+        //set the search icons
+        LinearLayout selecGroupIcon = (LinearLayout) findViewById(R.id.group_selected);
+        selecGroupIcon.setOnClickListener(this);
+
+        //setOnClickListener (whole page left)
+        (findViewById(R.id.button_back)).setOnClickListener(this);
+
+        String address = "http://180.76.148.62:8888/v1/sows";
+        HttpUtil.sendHttpRequest(address, new com.ustcerqiu.pigdoc.HttpCallbackListener() {
+            @Override
+            public void onFinish(String response) { //主线程中运行
+                LinearLayout picTableGroup = (LinearLayout) findViewById(R.id.group_pics_tables);
+                showResponse(response, picTableGroup);//
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        });
+
+    }//onCreate
+
+
+    // parse sow
+    private void parseSow(String jsonData){
+        try{
+            JSONObject jsonObject = new JSONObject(jsonData);
+            String sow_info = jsonObject.getString("sows");
+            JSONArray jsonArray = new JSONArray(sow_info);
+            Gson gson = new Gson();
+            pigCardList = new ArrayList<>();
+            PigCard pigCard; // = new PigCard();
+            for(int i=0;i<jsonArray.length();i++) {
+                jsonObject = jsonArray.getJSONObject(i);
+                Sow sow = gson.fromJson(jsonObject.toString(), Sow.class);
+                pigCard = new PigCard(sow.getEarTag(), "母猪", sow.getCategory(), sow.getGestationalAge(), sow.getBirthday(), sow.getDormitory(), sow.getState(),"无");
+                pigCardList.add(pigCard);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }//parse sow
+
+    // update UI
+    private void updateUI()
+    {
         //generate the pig cards list
         RecyclerView cardParentRecycleView = (RecyclerView) findViewById(R.id.pig_cards_list_RecyclerView);
-        List<PigCard> pigCardList = getPigCardList(); // get the data of the pig card
         PigCardAadpter adpter = new PigCardAadpter(pigCardList, R.layout.pig_card_outline_item);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         cardParentRecycleView.setLayoutManager(layoutManager); //set layout parameters
         cardParentRecycleView.setAdapter(adpter);
+    }// update UI
 
-        //set the search icons
-        LinearLayout selecGroupIcon = (LinearLayout) findViewById(R.id.group_selected);
-        selecGroupIcon.setOnClickListener(this);
-
-
-
-
-
-
-        //setOnClickListener (whole page left)
-        (findViewById(R.id.button_back)).setOnClickListener(this);
-
-    }//onCreate
-
-
+    //show the results to view
+    private void showResponse(final String response, final LinearLayout picTableGroup){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                parseSow(response);
+                updateUI();
+            }
+        });
+    }//
 
 }//end
