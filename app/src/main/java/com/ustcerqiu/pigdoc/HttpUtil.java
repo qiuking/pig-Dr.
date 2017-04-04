@@ -9,6 +9,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
+import static android.webkit.ConsoleMessage.MessageLevel.LOG;
+
 /**
  * Created by kkwang on 3/11/2017.
  */
@@ -25,14 +27,15 @@ public class HttpUtil {
                     connection = (HttpURLConnection) url.openConnection();
                     connection.setRequestMethod("GET");
                     connection.setRequestProperty("Accept-Charset", "utf-8");
-                    connection.setRequestProperty("contentType", "utf-8");
+                    connection.setRequestProperty("Charset", "utf-8");
                     connection.setConnectTimeout(8000);
                     connection.setReadTimeout(8000);
                     InputStream in = connection.getInputStream();
-                    reader = new BufferedReader(new InputStreamReader(in));
+                    reader = new BufferedReader(new InputStreamReader(in,"UTF-8"));
+
                     StringBuilder response = new StringBuilder();
                     String line;
-                    while((line=reader.readLine())!=null){
+                    while((line=reader.readLine())!=null) {
                         response.append(line);
                     }
                     if(listener!=null)

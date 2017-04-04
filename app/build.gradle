@@ -34,5 +34,9 @@ dependencies {
     // gson
     compile 'com.google.code.gson:gson:2.7'
     testCompile 'junit:junit:4.12'
+}
 
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
 }

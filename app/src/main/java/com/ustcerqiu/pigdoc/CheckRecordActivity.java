@@ -16,6 +16,7 @@ import com.google.gson.Gson;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -120,23 +121,6 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
             otherInfoList.get(viewHolderPositon).setText(item.otherInfo);
         }
     }//pigCardAdapter
-
-
-    //method to get data need to generate the list
-    /*
-    public List<PigCard> getPigCardList(){
-        //TODO 完成获取数据的方法
-        List<PigCard> pigCardList = new ArrayList<>();
-        PigCard pigCard; // = new PigCard();
-        for(int i=0; i<20; i++){
-            pigCard = new PigCard("SBx123"+i, "母猪", "大约克", "3胎", "2017-03-26", "LHY02栋0"+i*3, "怀孕待产","饲养员：王2晶晶");
-            pigCardList.add(pigCard);
-        }
-        return pigCardList;
-    }// getPigCarList
-    */
-
-
 
     ///--##############################################################################-----/////
     @Override

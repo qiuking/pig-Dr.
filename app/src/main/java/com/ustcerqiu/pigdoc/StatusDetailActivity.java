@@ -22,6 +22,7 @@ public class StatusDetailActivity extends BaseMinorClass{
     //mCom.mRateBarData barData;
     //
     private List<mCom.mRateBarData> dataList;
+    private List<List<String>> tableData;
 ///////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     //定义启动办法,和所需要的数据，方便其它程序转调;
     public static void actionStart(Context context, String titleName){
@@ -36,7 +37,7 @@ public class StatusDetailActivity extends BaseMinorClass{
     private List<mCom.HorizontalRateBar> getBarPicDataList(){
         List<mCom.HorizontalRateBar> picList = new ArrayList<>();
         mCom.HorizontalRateBar pic;
-        pic = new mCom.HorizontalRateBar( dataList, "养殖场", true ); //true显示标题
+        pic = new mCom.HorizontalRateBar( dataList, "母猪胎龄结构表", true ); //true显示标题
         picList.add(pic);
         return picList ;
     } //getBarPicDataList
@@ -45,30 +46,36 @@ public class StatusDetailActivity extends BaseMinorClass{
     private mCom.mTablePic getSingleTableData(){
         //TODO
         //mTablePic have parameters, they are title showTitle titleRow showTitleRow totalRow show totalRow tableDataList addAnimation
-        int columnNum =(int) (Math.random()*15)+2; //generate the number of column
+        List<String> column_title = new ArrayList<>();
+        column_title.add("胎龄");
+        column_title.add("数量");
+        column_title.add("实际比例%");
+        int columnNum = column_title.size(); //generate the number of column
+
         mCom.mTablePic tablePic = new mCom.mTablePic(); //new instance
-        tablePic.setTitle("the random title"+(int)(Math.random()*15), true ); //show title;
+        tablePic.setTitle("母猪胎龄结构表", true ); //show title;
         List<String> row = new ArrayList<>();
         for(int i=0; i<columnNum; i++){
-            row.add("第"+i+"列");
+            row.add(column_title.get(i));
         }
         tablePic.setTitleRow(row, true); //set title row
 
-        row = new ArrayList<>();
-        for(int i=0; i<columnNum; i++){
-            row.add("总"+i);
-        }
-        tablePic.setTotalRow(row, true); // set total row
-
-        int rowNum = (int) (Math.random()*10)+1;
-        List<List<String>> tableData = new ArrayList<>();
-        for(int i=0; i<rowNum; i++){
-            row = new ArrayList<>();
-            for(int j=0; j<columnNum; j++){
-                row.add(String.format("%.1f",Math.random()*100));
-            }
-            tableData.add(row);
-        }//for
+//        row = new ArrayList<>();
+//        for(int i=0; i<columnNum; i++){
+//            row.add("总"+i);
+//        }
+//        tablePic.setTotalRow(row, true); // set total row
+//
+//        int rowNum = (int) (Math.random()*10)+1;
+//        List<List<String>> tableData = new ArrayList<>();
+//
+//        for(int i=0; i<rowNum; i++){
+//            row = new ArrayList<>();
+//            for(int j=0; j<columnNum; j++){
+//                row.add(String.format("%.1f",Math.random()*100));
+//            }
+//            tableData.add(row);
+//        }//for
         tablePic.setTableDataList(tableData);
         tablePic.setAddAnimation(true); //使用动画
         return tablePic;
@@ -83,16 +90,20 @@ public class StatusDetailActivity extends BaseMinorClass{
             JSONArray jsonArray = new JSONArray(gestational_age_reports);
             dataList = new ArrayList<>();
             mCom.mRateBarData barData;
-
+            tableData = new ArrayList<>();
             for(int i=0;i<jsonArray.length();i++)
             {
+                List<String> row = new ArrayList<>();
                 jsonObject = jsonArray.getJSONObject(i);
                 int gestational_age = jsonObject.getInt("gestational_age");
                 int count = jsonObject.getInt("count");
                 double rate = jsonObject.getDouble("rate");
                 barData = new mCom.mRateBarData("胎龄" + gestational_age + "年", rate, "");
-                Log.e("boar", "胎龄" + gestational_age + "年"+ rate);
                 dataList.add(barData);
+                row.add(gestational_age+"胎");
+                row.add(String.valueOf(count));
+                row.add(String.format("%.2f",rate*100));
+                tableData.add(row);
             }
 
         }catch (Exception e){
@@ -113,11 +124,7 @@ public class StatusDetailActivity extends BaseMinorClass{
                 for (mCom.HorizontalRateBar pic : picList) {
                     pic.insertInto(picTableGroup, true); //使用动画true
                 }
-
-                //insert tables
-                for (int i = 0; i < 2; i++) { //control the number of the tables
-                    getSingleTableData().insertTableTo(picTableGroup);   //sample of how to use the table insert method
-                }
+                getSingleTableData().insertTableTo(picTableGroup);
             }
         });
     }//
