@@ -23,6 +23,7 @@ public class StatusDetailActivity extends BaseMinorClass{
     //
     private List<mCom.mRateBarData> dataList;
     private List<List<String>> tableData;
+    private int total_count;
 ///////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
     //定义启动办法,和所需要的数据，方便其它程序转调;
     public static void actionStart(Context context, String titleName){
@@ -60,22 +61,14 @@ public class StatusDetailActivity extends BaseMinorClass{
         }
         tablePic.setTitleRow(row, true); //set title row
 
-//        row = new ArrayList<>();
-//        for(int i=0; i<columnNum; i++){
-//            row.add("总"+i);
-//        }
-//        tablePic.setTotalRow(row, true); // set total row
-//
-//        int rowNum = (int) (Math.random()*10)+1;
-//        List<List<String>> tableData = new ArrayList<>();
-//
-//        for(int i=0; i<rowNum; i++){
-//            row = new ArrayList<>();
-//            for(int j=0; j<columnNum; j++){
-//                row.add(String.format("%.1f",Math.random()*100));
-//            }
-//            tableData.add(row);
-//        }//for
+
+        row = new ArrayList<>();
+        row.add("全部");
+        row.add(String.valueOf(total_count));
+        row.add("100");
+        tablePic.setTotalRow(row, true); // set total row
+
+
         tablePic.setTableDataList(tableData);
         tablePic.setAddAnimation(true); //使用动画
         return tablePic;
@@ -91,6 +84,7 @@ public class StatusDetailActivity extends BaseMinorClass{
             dataList = new ArrayList<>();
             mCom.mRateBarData barData;
             tableData = new ArrayList<>();
+            total_count = 0;
             for(int i=0;i<jsonArray.length();i++)
             {
                 List<String> row = new ArrayList<>();
@@ -103,6 +97,7 @@ public class StatusDetailActivity extends BaseMinorClass{
                 row.add(gestational_age+"胎");
                 row.add(String.valueOf(count));
                 row.add(String.format("%.2f",rate*100));
+                total_count+=count;
                 tableData.add(row);
             }
 
