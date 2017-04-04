@@ -38,7 +38,7 @@ public class StatusDetailActivity extends BaseMinorClass{
     private List<mCom.HorizontalRateBar> getBarPicDataList(){
         List<mCom.HorizontalRateBar> picList = new ArrayList<>();
         mCom.HorizontalRateBar pic;
-        pic = new mCom.HorizontalRateBar( dataList, "母猪胎龄结构表", true ); //true显示标题
+        pic = new mCom.HorizontalRateBar( dataList, "母猪胎龄结构", true ); //true显示标题
         picList.add(pic);
         return picList ;
     } //getBarPicDataList
@@ -92,7 +92,7 @@ public class StatusDetailActivity extends BaseMinorClass{
                 int gestational_age = jsonObject.getInt("gestational_age");
                 int count = jsonObject.getInt("count");
                 double rate = jsonObject.getDouble("rate");
-                barData = new mCom.mRateBarData("胎龄" + gestational_age + "年", rate, "");
+                barData = new mCom.mRateBarData("胎龄" + gestational_age + "胎", rate, "");
                 dataList.add(barData);
                 row.add(gestational_age+"胎");
                 row.add(String.valueOf(count));

@@ -12,6 +12,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -137,8 +138,8 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         ((TextView) this.findViewById(R.id.title_name_textView)).setText(titleName);  //this仅仅是强调本活动的调用环境
 
         //set the search icons
-        LinearLayout selecGroupIcon = (LinearLayout) findViewById(R.id.group_selected);
-        selecGroupIcon.setOnClickListener(this);
+        LinearLayout selectGroupIcon = (LinearLayout) findViewById(R.id.group_selected);
+        selectGroupIcon.setOnClickListener(this);
 
         //setOnClickListener (whole page left)
         (findViewById(R.id.button_back)).setOnClickListener(this);
@@ -147,8 +148,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         HttpUtil.sendHttpRequest(address, new com.ustcerqiu.pigdoc.HttpCallbackListener() {
             @Override
             public void onFinish(String response) { //主线程中运行
-                LinearLayout picTableGroup = (LinearLayout) findViewById(R.id.group_pics_tables);
-                showResponse(response, picTableGroup);//
+                showResponse(response);//
             }
 
             @Override
@@ -165,7 +165,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         try{
             JSONObject jsonObject = new JSONObject(jsonData);
             String sow_info = jsonObject.getString("sows");
-            JSONArray jsonArray = new JSONArray(sow_info);
+           JSONArray jsonArray = new JSONArray(sow_info);
             Gson gson = new Gson();
             pigCardList = new ArrayList<>();
             PigCard pigCard; // = new PigCard();
@@ -173,8 +173,9 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                 jsonObject = jsonArray.getJSONObject(i);
                 Sow sow = gson.fromJson(jsonObject.toString(), Sow.class);
                 pigCard = new PigCard(sow.getEarTag(), "母猪", sow.getCategory(), sow.getGestationalAge(), sow.getBirthday(), sow.getDormitory(), sow.getState(),"无");
-                pigCardList.add(pigCard);
-            }
+                pigCardList.add(pigCard); }
+          //  Gson gson = new Gson();
+          //  List<Sow> sowList = gson.fromJson(sow_info, new TypeToken<List<Sow>>(){}.getType());
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -193,7 +194,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
     }// update UI
 
     //show the results to view
-    private void showResponse(final String response, final LinearLayout picTableGroup){
+    private void showResponse(final String response){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
