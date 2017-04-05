@@ -34,13 +34,15 @@
             <EditText android:id="@+id/search_keywords"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:lines="1"
+                android:maxLines="1"
                 android:gravity="start|center"
                 android:paddingLeft="8dp"
                 android:background="@null"
                 android:textSize="@dimen/normal_text"
                 android:textColor="@color/colorPrimary_text"
-                android:hint="耳标/猪舍"/>
+                android:hint="耳标/猪舍"
+                android:singleLine="true"
+                android:imeOptions="actionSearch"/>
         </LinearLayout>
         <LinearLayout android:id="@+id/group_selected"
             android:clickable="true"
@@ -60,7 +62,7 @@
                 android:background="@null"
                 android:textSize="@dimen/normal_text"
                 android:textColor="@color/colorPrimary_text"
-                android:text="全  部"/>
+                android:text="全  部" />
             <ImageView
                 android:layout_width="20dp"
                 android:layout_height="24dp"
@@ -73,13 +75,73 @@
 
     <View android:background="#77FFFFFF" android:layout_marginLeft="16dp" android:layout_marginRight="16dp" android:layout_width="match_parent" android:layout_height="1dp"  />
     <!-- 中间内容部分框架 -->
+    <FrameLayout android:id="@+id/wait_loading"
+        android:layout_width="match_parent"
+        android:layout_height="150dp">
+        <ProgressBar
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="center" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="努力加载中..."/>
+    </FrameLayout>
+
     <android.support.v7.widget.RecyclerView
         android:id="@+id/pig_cards_list_RecyclerView"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:padding="2dp"
         android:layout_marginTop="1dp">
     </android.support.v7.widget.RecyclerView>
+
+    <!--滚动加载中的过程显示-->
+    <LinearLayout android:id="@+id/scroll_loading_footer"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:orientation="horizontal"
+        android:background="#000"
+        android:layout_marginTop="0dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="bottom"
+            android:background="@color/colorAccent1">
+            <TextView android:id="@+id/footer_loading_content"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_gravity="center"
+                android:gravity="center"
+                android:text="松开 加载更多"
+                android:textColor="#222"/>
+            <LinearLayout android:id="@+id/footer_loading_progress"
+                android:visibility="gone"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:gravity="center"
+                android:orientation="horizontal">
+                <ProgressBar
+                    android:layout_width="wrap_content"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="10dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="努力加载中..."
+                    android:textColor="#222"/>
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+
+    </LinearLayout>
 
     <!--无底部导航栏的状态-->
 </LinearLayout>

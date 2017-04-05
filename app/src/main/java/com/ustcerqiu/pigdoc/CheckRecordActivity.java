@@ -8,6 +8,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -20,6 +21,8 @@ import org.json.JSONObject;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
+
+import cn.carbswang.android.numberpickerview.library.NumberPickerView;
 
 //this activity deals with the intents of check the record date
 public class CheckRecordActivity extends BaseMinorClass implements View.OnClickListener {
@@ -48,9 +51,22 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                 overridePendingTransition(R.anim.translate_in_back, R.anim.translate_out_back);  //添加返回切换动画
                 break;
             case R.id.group_selected: //select the group
-                TextView selectedGroup = (TextView) findViewById(R.id.group_selected_text);
-                String[] dpValues = {"全部","怀孕","哺乳","断奶空怀","反情空怀","B超鉴定空怀","流产空怀","后备母猪","后备第一次反情","后备第二次反情","公猪","已离场公猪"};
-                Dialog dd = mCom.generateBottomNumpickerDialog(this, dpValues, 0 );
+                final TextView selectedGroup = (TextView) findViewById(R.id.group_selected_text);
+                final int nowId = 0;
+                final String[] dpValues = {"全  部","怀孕","哺乳","断奶空怀","反情空怀","B超鉴定空怀","流产空怀","后备母猪","后备第一次反情","后备第二次反情","公猪","已离场公猪"};
+                selectedGroup.setText(dpValues[nowId]);
+                mCom.mDialog mDialog = mCom.generateBottomNumberPickerDialog(this, dpValues, nowId , new mCom.mDialogReturnListener(){
+                    @Override
+                    public void setNegativeButton(mCom.mDialog dialog, NumberPickerView pickerView) {
+                    }//do nothing special
+
+                    @Override
+                    public void setPositiveButton(mCom.mDialog dialog, NumberPickerView pickerView) {
+                        int selectedId = pickerView.getValue();
+                        if(selectedId == nowId ) return; //没有改变，就不变?????
+                        selectedGroup.setText(dpValues[selectedId]);
+                    }
+                } );
                 break;
             default:
                 break;
@@ -76,7 +92,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
     }//pigCard
 
     //the adapter for the pigCard list
-    public class PigCardAadpter extends mCom.comListAdapter<PigCard>{
+    public class PigCardAdapter extends mCom.comListAdapter<PigCard>{
         // the private List<T> mItemList 和 private int itemLayoutId  is in the parent；注意在构造函数中 itemLayoutId的赋值
         //unKnown the number of the holders, so use the list to store the listview holder content.
         private List<TextView> numberList = new ArrayList<>();
@@ -91,7 +107,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         //////////////////////////////////////
         //构造方法. set the data and the layout
         // R.layout.pig_card_outline_item
-        public PigCardAadpter(List<PigCard> pigCardList, int pigCardLayoutId){
+        public PigCardAdapter(List<PigCard> pigCardList, int pigCardLayoutId){
             super(pigCardList, pigCardLayoutId);
         }
 
@@ -184,13 +200,33 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
     // update UI
     private void updateUI()
     {
-        //generate the pig cards list
+        //hide the loading progress
+        FrameLayout waitLoading = (FrameLayout) findViewById(R.id.wait_loading);
+        waitLoading.setVisibility(View.GONE); //hide
+        //update the pig cards list
         RecyclerView cardParentRecycleView = (RecyclerView) findViewById(R.id.pig_cards_list_RecyclerView);
-        PigCardAadpter adpter = new PigCardAadpter(pigCardList, R.layout.pig_card_outline_item);
+        PigCardAdapter adapter = new PigCardAdapter(pigCardList, R.layout.pig_card_outline_item);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         cardParentRecycleView.setLayoutManager(layoutManager); //set layout parameters
-        cardParentRecycleView.setAdapter(adpter);
+        cardParentRecycleView.setAdapter(adapter);
+        //add 增加动作监控
+        final LinearLayout scrollFooter = (LinearLayout) findViewById(R.id.scroll_loading_footer);
+        final LinearLayout footerLoadProgress = (LinearLayout) findViewById(R.id.footer_loading_progress);
+        final TextView footerLoadText = (TextView) findViewById(R.id.footer_loading_content);
+        cardParentRecycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                //判断是否滚动到底部
+                Log.e("XXX", "onScrolled: "+dx+"   " + dy);
+                int bottomLeft = recyclerView.computeVerticalScrollRange()- recyclerView.computeVerticalScrollExtent() - recyclerView.computeVerticalScrollOffset();
+                Log.e("Xview的底部剩余距离", "bottomLeft "+bottomLeft);
+                if(bottomLeft <= 0 ){
+                    Log.e("X到底部了X", "bottomLeft "+bottomLeft);
+                }
+            }
+        });
     }// update UI
 
     //show the results to view

@@ -364,16 +364,6 @@ public class mCom {
         translateAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
         parent.addView(v);
         v.startAnimation(translateAnimation);  //只有一个动画，所以就简单处理了
-        //animationSet.addAnimation(translateAnimation);
-        //final TranslateAnimation animation = translateAnimation;
-        /*Runnable runnable =new Runnable() {
-            @Override
-            public void run() {
-                parent.addView(v);
-                v.startAnimation(animation);
-            }
-        };
-        handler.postDelayed(runnable, durationMs); */
     }//
 
     //定义所需横向柱状条的单个的 数据类
@@ -586,12 +576,13 @@ public class mCom {
 //################# 功能块8 ####################
 //定义一method，输出一个Dialog dialog，实现弹出底部滚动选择对话框的功能
     //displayValues 用以替换默认的选项数字，选择结果仍是数字，但界面显示为设置的字符串
-    //defaultPostion 用以标识打开时候定位所在，默认所处的位置
-    static public Dialog generateBottomNumpickerDialog(Activity activity, String[] displayValues, int defaultPosition){
-        Dialog dialog = new Dialog(activity, R.style.mDialogTheme); // generate the dialog theme
+    //defaultPosition 用以标识打开时候定位所在，默认所处的位置
+    static public mDialog generateBottomNumberPickerDialog(Activity activity, String[] displayValues, int defaultPosition, final mDialogReturnListener listener){
+        final mDialog dialog = new mDialog(activity, R.style.mDialogTheme); // generate the dialog theme
         dialog.setContentView(R.layout.dialog_1);  //set layout file
         dialog.setCanceledOnTouchOutside(false);  //can not be canceled by click on outside space
         dialog.show();
+        //dialog的位置和显示处理
         Window dialogWindow = dialog.getWindow();
         WindowManager.LayoutParams layoutParams = dialogWindow.getAttributes();
         DisplayMetrics dm = new DisplayMetrics();
@@ -600,53 +591,47 @@ public class mCom {
         dialogWindow.setAttributes(layoutParams);
         dialogWindow.getDecorView().setPadding(0,0,0,0); //占满控件
         dialogWindow.setGravity(Gravity.CENTER_HORIZONTAL|Gravity.BOTTOM); //布局位置
-
-    /*    NumberPicker valuePicker = (NumberPicker) dialogWindow.findViewById(R.id.num_picker);  //注意在dialogWindow中找，否则找不到出错
-        valuePicker.setFormatter(new NumberPicker.Formatter() {
-            @Override
-            public String format(int value) {
-                return ""+value;
-            }
-        });
-        valuePicker.setOnValueChangedListener(new NumberPicker.OnValueChangeListener() {
-            @Override
-            public void onValueChange(NumberPicker picker, int oldVal, int newVal) {
-                //TODO
-            }
-        });
-        valuePicker.setOnScrollListener(new NumberPicker.OnScrollListener() {
-            @Override
-            public void onScrollStateChange(NumberPicker view, int scrollState) {
-                switch(scrollState){
-                    case NumberPicker.OnScrollListener.SCROLL_STATE_FLING: //滑动惯性过程种
-                        break;
-                    case NumberPicker.OnScrollListener.SCROLL_STATE_IDLE: //没滑动
-                        break;
-                    case NumberPicker.OnScrollListener.SCROLL_STATE_TOUCH_SCROLL: //触摸滑动中
-                        break;
-                    default:
-                        break;
-                }
-            }
-        });
+        //内部numberickerViewP的处理
+        final NumberPickerView valuePicker = (NumberPickerView) dialogWindow.findViewById(R.id.number_picker_view);
         valuePicker.setDisplayedValues(displayValues);
         valuePicker.setMinValue(0);
         valuePicker.setMaxValue(displayValues.length-1);
         valuePicker.setValue(defaultPosition);
-        valuePicker.setWrapSelectorWheel(false);  //是否循环
-        valuePicker.setDescendantFocusability(NumberPicker.FOCUS_BLOCK_DESCENDANTS); //避免点击后可修改状态
-        //dialog.cancel();
-        */
-
-        NumberPickerView valuePicker = (NumberPickerView) dialogWindow.findViewById(R.id.number_picker_view);
-        valuePicker.setDisplayedValues(displayValues);
-        valuePicker.setMinValue(0);
-        valuePicker.setMaxValue(displayValues.length-1);
-        valuePicker.setValue(0);
-
-
+        //TextView click icons
+        TextView negativeIcon = (TextView) dialogWindow.findViewById(R.id.icon_negative); //dialog 不可 or dialogWindow ?
+        negativeIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.setNegativeButton(dialog, valuePicker);
+                dialog.cancel(); //退出dialog
+            }
+        });
+        TextView positiveIcon = (TextView) dialogWindow.findViewById(R.id.icon_positive);
+        positiveIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.setPositiveButton(dialog, valuePicker);
+                dialog.cancel(); //退出dialog
+            }
+        });
         return dialog;
-    }// generateBottomNumpickerDialog
+    }// generateBottomNumberPickerDialog
+
+    //the interface used in the generateBottomNumberPickerDialog
+    public interface mDialogReturnListener{
+        void setNegativeButton(mDialog dialog, NumberPickerView pickerView);  //点击取消按钮后，需要的动作
+        void setPositiveButton(mDialog dialog, NumberPickerView pickerView);  //点击确认那就后需要的动作
+    }//interface mDialogReturnListener
+    //将dialog的class自定义化，便于将来的扩展
+    static public class mDialog extends Dialog{
+        //构造函数
+        public mDialog(Context activity, int styleId){
+            super(activity, styleId);
+        }
+        public mDialog(Context activity){
+            super(activity);
+        }
+    }//class mDialog
 
 
 
