@@ -7,6 +7,8 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.DragEvent;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
@@ -204,7 +206,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         FrameLayout waitLoading = (FrameLayout) findViewById(R.id.wait_loading);
         waitLoading.setVisibility(View.GONE); //hide
         //update the pig cards list
-        RecyclerView cardParentRecycleView = (RecyclerView) findViewById(R.id.pig_cards_list_RecyclerView);
+        final RecyclerView cardParentRecycleView = (RecyclerView) findViewById(R.id.pig_cards_list_RecyclerView);
         PigCardAdapter adapter = new PigCardAdapter(pigCardList, R.layout.pig_card_outline_item);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
@@ -214,19 +216,21 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         final LinearLayout scrollFooter = (LinearLayout) findViewById(R.id.scroll_loading_footer);
         final LinearLayout footerLoadProgress = (LinearLayout) findViewById(R.id.footer_loading_progress);
         final TextView footerLoadText = (TextView) findViewById(R.id.footer_loading_content);
+
+        /*
         cardParentRecycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 //判断是否滚动到底部
-                Log.e("XXX", "onScrolled: "+dx+"   " + dy);
+                //Log.e("XXX", "onScrolled: "+dx+"   " + dy);
                 int bottomLeft = recyclerView.computeVerticalScrollRange()- recyclerView.computeVerticalScrollExtent() - recyclerView.computeVerticalScrollOffset();
-                Log.e("Xview的底部剩余距离", "bottomLeft "+bottomLeft);
+                //Log.e("Xview的底部剩余距离", "bottomLeft "+bottomLeft);
                 if(bottomLeft <= 0 ){
                     Log.e("X到底部了X", "bottomLeft "+bottomLeft);
                 }
             }
-        });
+        }); */
     }// update UI
 
     //show the results to view
@@ -239,5 +243,21 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
             }
         });
     }//
+
+    //重写手势事件，纪录移动距离  //与recycleview的动作冲突，或者说呗其抢占了鼠标的动作；
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        switch(event.getAction()){
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_UP:
+                Log.e("touch", ""+ event.getY());
+                break;
+        }
+        Log.e("touch", "XXXXXXXXXXXXXXXXXXXXXX");
+
+        return super.onTouchEvent(event);
+    }
+
 
 }//end
