@@ -103,7 +103,7 @@
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:orientation="horizontal"
-        android:background="#000"
+        android:background="#ddd"
         android:layout_marginTop="0dp">
         <LinearLayout
             android:layout_width="match_parent"
@@ -113,34 +113,33 @@
             android:background="@color/colorAccent1">
             <TextView android:id="@+id/footer_loading_content"
                 android:layout_width="wrap_content"
-                android:layout_height="48dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
                 android:gravity="center"
-                android:text="松开 加载更多"
+                android:padding="10dp"
+                android:textStyle="bold"
+                android:text="松开 加载更多..."
                 android:textColor="#222"/>
-            <LinearLayout android:id="@+id/footer_loading_progress"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="48dp"
-                android:gravity="center"
-                android:orientation="horizontal">
-                <ProgressBar
-                    android:layout_width="wrap_content"
-                    android:layout_height="32dp"
-                    android:layout_gravity="center"
-                    android:layout_marginRight="10dp"/>
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:text="努力加载中..."
-                    android:textColor="#222"/>
-            </LinearLayout>
 
         </LinearLayout>
-
-
-
+    </LinearLayout>
+    <LinearLayout android:id="@+id/footer_loading_progress"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:gravity="center"
+        android:orientation="horizontal">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="32dp"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="努力加载中..."
+            android:textColor="#222"/>
     </LinearLayout>
 
     <!--无底部导航栏的状态-->

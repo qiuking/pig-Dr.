@@ -1,9 +1,11 @@
 package com.ustcerqiu.pigdoc;
 
+import android.animation.ValueAnimator;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -29,7 +31,11 @@ import cn.carbswang.android.numberpickerview.library.NumberPickerView;
 //this activity deals with the intents of check the record date
 public class CheckRecordActivity extends BaseMinorClass implements View.OnClickListener {
     //属性区域
-    //
+    int touchX0;
+    int touchY0;
+    boolean scrollToBottom = false;
+    boolean isLoading = false;
+    int oldMotionEnevtState;
     private List<PigCard> pigCardList;
     //
 
@@ -216,21 +222,88 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         final LinearLayout scrollFooter = (LinearLayout) findViewById(R.id.scroll_loading_footer);
         final LinearLayout footerLoadProgress = (LinearLayout) findViewById(R.id.footer_loading_progress);
         final TextView footerLoadText = (TextView) findViewById(R.id.footer_loading_content);
+        final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) scrollFooter.getLayoutParams();
 
-        /*
         cardParentRecycleView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                //判断是否滚动到底部
-                //Log.e("XXX", "onScrolled: "+dx+"   " + dy);
-                int bottomLeft = recyclerView.computeVerticalScrollRange()- recyclerView.computeVerticalScrollExtent() - recyclerView.computeVerticalScrollOffset();
-                //Log.e("Xview的底部剩余距离", "bottomLeft "+bottomLeft);
-                if(bottomLeft <= 0 ){
-                    Log.e("X到底部了X", "bottomLeft "+bottomLeft);
-                }
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
             }
-        }); */
+        });
+
+        cardParentRecycleView.addOnItemTouchListener(new RecyclerView.OnItemTouchListener() {
+            @Override
+            public boolean onInterceptTouchEvent(RecyclerView recyclerView, MotionEvent e) {
+                Boolean result = false;
+                switch (e.getAction()){
+                    case MotionEvent.ACTION_DOWN: //按下时候
+                        if(scrollToBottom) touchY0 = (int) e.getRawY(); //取此时刻的手指触摸点
+                        break;
+                    case MotionEvent.ACTION_MOVE: //拖动时候
+                        //若已经滚动到最下面
+                        if(scrollToBottom){
+                            int touchY1 = (int) e.getRawY(); //当前触摸点
+                            int dy = touchY0 - touchY1;
+                            //if(dy<0) dy -= 1; //下滑过程中，加快边框变化，避免出现滚动； 此法无效
+                            touchY0 = touchY1; //纪录
+                            int height = lp.height + dy;
+                            if(height<=0){
+                                height = 0;  //避免出现负数高度值
+                                scrollToBottom = false; //设置未滚动到底部，恢复状态
+                            }
+                            lp.height = height;
+                            scrollFooter.setLayoutParams(lp);
+                            //设置对应字体的大小
+                            float textsize = height/12.0f;
+                            if(textsize>40) textsize = 40.0f;
+                            footerLoadText.setTextSize(textsize);
+                        }else{ //之前的上一次动作查询中，还并未到底部
+                            int bottomLeft = recyclerView.computeVerticalScrollRange()- recyclerView.computeVerticalScrollExtent() - recyclerView.computeVerticalScrollOffset();
+                            if(bottomLeft <= 0 ){
+                                touchY0 = (int) e.getRawY(); //取此时刻的手指触摸点
+                                scrollToBottom = true; //设置滚动到底部
+                            }
+                        }//if
+                        break;
+                    case MotionEvent.ACTION_UP: //抬起
+                        if(lp.height>0){
+                            ValueAnimator va = ValueAnimator.ofInt(lp.height, 0);
+                            va.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+                                @Override
+                                public void onAnimationUpdate(ValueAnimator animation) {
+                                    int h = (int) animation.getAnimatedValue();
+                                    lp.height=h;
+                                    scrollFooter.setLayoutParams(lp);
+                                }
+                            });
+                            va.setDuration(450);
+                            va.start();
+                            if(lp.height>250) {
+                                footerLoadProgress.setVisibility(View.VISIBLE); //高度最低限制
+                                footerLoadText.setVisibility(View.GONE);
+                                if(! isLoading) {
+                                    //TODO 请求新数据
+                                }
+                            }//if
+
+                        }//if
+                        scrollToBottom = false; //设置未滚动到底部，恢复状态
+                        break;
+                }//switch
+                return result;
+            }//onInterceptTouchEvent
+
+            @Override
+            public void onTouchEvent(RecyclerView rv, MotionEvent e) {
+
+            }
+
+            @Override
+            public void onRequestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+
+            }
+        });
+
     }// update UI
 
     //show the results to view
@@ -244,20 +317,11 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         });
     }//
 
-    //重写手势事件，纪录移动距离  //与recycleview的动作冲突，或者说呗其抢占了鼠标的动作；
+
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        switch(event.getAction()){
-            case MotionEvent.ACTION_DOWN:
-            case MotionEvent.ACTION_MOVE:
-            case MotionEvent.ACTION_UP:
-                Log.e("touch", ""+ event.getY());
-                break;
-        }
-        Log.e("touch", "XXXXXXXXXXXXXXXXXXXXXX");
-
-        return super.onTouchEvent(event);
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        //Log.e("touch", ""+ ev.getRawY());
+        //touchY = (int) ev.getRawY();
+        return super.dispatchTouchEvent(ev);
     }
-
-
 }//end
