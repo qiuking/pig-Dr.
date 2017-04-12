@@ -22,11 +22,15 @@ import com.google.gson.reflect.TypeToken;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
 import cn.carbswang.android.numberpickerview.library.NumberPickerView;
+import okhttp3.Call;
+import okhttp3.Callback;
+import okhttp3.Response;
 
 //this activity deals with the intents of check the record date
 public class CheckRecordActivity extends BaseMinorClass implements View.OnClickListener {
@@ -36,7 +40,14 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
     boolean scrollToBottom = false;
     boolean isLoading = false;
     int oldMotionEnevtState;
+    int currentPage = 1;
+    //int totalNum; //返回的总数据量
+    final int pageLimit = 15; //单次申请数据量
     private List<PigCard> pigCardList;
+    //ip request
+    String ip1 = "http://180.76.148.62:8888/v1/sows?";
+    Boolean haveSowData = true; //标记是否还有数据可刷新
+
     //
 
     ///////////\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\
@@ -168,7 +179,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         //setOnClickListener (whole page left)
         (findViewById(R.id.button_back)).setOnClickListener(this);
 
-        String address = "http://180.76.148.62:8888/v1/sows";
+        String address = ip1 + "CurrentPage=" + currentPage + "&&PageLimit=" + pageLimit;
         HttpUtil.sendHttpRequest(address, new com.ustcerqiu.pigdoc.HttpCallbackListener() {
             @Override
             public void onFinish(String response) { //主线程中运行
@@ -188,18 +199,32 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
     private void parseSow(String jsonData){
         try{
             JSONObject jsonObject = new JSONObject(jsonData);
-            String sow_info = jsonObject.getString("sows");
-           JSONArray jsonArray = new JSONArray(sow_info);
-            Gson gson = new Gson();
+            String sows_data = jsonObject.getString("sows");
+           //JSONArray jsonArray = new JSONArray(sow_info);
+           // Gson gson = new Gson();
             pigCardList = new ArrayList<>();
-            PigCard pigCard; // = new PigCard();
+            List<Sow> sowList = Sow.jsonToSowList(sows_data);
+            PigCard pigCard;
+            for(Sow sow : sowList){
+                pigCard = new PigCard(sow.getEarLack(), "母猪", sow.getCategory(), sow.getGestationalAge(), sow.getBirthday(), sow.getDormitory(), sow.getState(),"无");
+                pigCardList.add(pigCard);
+            }
+            currentPage ++;
+            Log.e("xxx", "parseSowXXXXXXXXXXXXXXXXXXXX: "+currentPage);
+            /*PigCard pigCard; // = new PigCard();
+            Log.e("xxx", "parseSow: "+currentPage);
             for(int i=0;i<jsonArray.length();i++) {
                 jsonObject = jsonArray.getJSONObject(i);
                 Sow sow = gson.fromJson(jsonObject.toString(), Sow.class);
                 pigCard = new PigCard(sow.getEarTag(), "母猪", sow.getCategory(), sow.getGestationalAge(), sow.getBirthday(), sow.getDormitory(), sow.getState(),"无");
                 pigCardList.add(pigCard); }
+            int nowNum = pigCardList.size();
+            int totalNum = jsonObject.getInt("Total");
+            if(nowNum >= totalNum) haveSowData = false;
+            currentPage ++;
+            Log.e("xxx", "parseSowXXXXXXXXXXXXXXXXXXXX: "+currentPage);
           //  Gson gson = new Gson();
-          //  List<Sow> sowList = gson.fromJson(sow_info, new TypeToken<List<Sow>>(){}.getType());
+          //  List<Sow> sowList = gson.fromJson(sow_info, new TypeToken<List<Sow>>(){}.getType()); */
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -279,10 +304,58 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                             va.setDuration(450);
                             va.start();
                             if(lp.height>250) {
-                                footerLoadProgress.setVisibility(View.VISIBLE); //高度最低限制
-                                footerLoadText.setVisibility(View.GONE);
+                                //footerLoadProgress.setVisibility(View.VISIBLE); //高度最低限制
+                                //footerLoadText.setVisibility(View.GONE);
                                 if(! isLoading) {
-                                    //TODO 请求新数据
+                                    //
+                                    isLoading = true;
+                                    String address = ip1 + "CurrentPage=" + currentPage + "&&PageLimit=" + pageLimit;
+                                    Log.e("address  ", address );
+                                    HttpUtil.sendOkHttpRequest(address, new Callback() {
+                                        @Override
+                                        public void onFailure(Call call, IOException e) {
+                                            //footerLoadProgress.setVisibility(View.GONE); //高度最低限制
+                                            //footerLoadText.setVisibility(View.VISIBLE);
+                                            lp.height = 150;
+                                            scrollFooter.setLayoutParams(lp);
+                                            footerLoadText.setTextSize(12);
+                                            footerLoadText.setText("加载失败。。。");
+                                            isLoading = false;
+                                            Log.e("TODO 请求新数据", "qqqqqqqqqqqqqqqqq1 " );
+                                        }
+
+                                        @Override
+                                        public void onResponse(Call call, Response response) throws IOException {
+                                            String responseData = response.body().string();
+                                            PigCard pigCard;
+                                            String sows_data = null;
+                                            Log.e("TODO 请求新数据", "qqqqqqqqqqq2 " );
+                                            try{
+                                                JSONObject jsonObject = new JSONObject(responseData);
+                                                sows_data = jsonObject.getString("sows");
+                                                List<Sow> sowList = Sow.jsonToSowList(sows_data);
+                                                List<PigCard> addPigCardList = new ArrayList<>();
+                                                for(Sow sow : sowList){
+                                                    pigCard = new PigCard(sow.getEarLack(), "母猪", sow.getCategory(), sow.getGestationalAge(), sow.getBirthday(), sow.getDormitory(), sow.getState(),"无");
+                                                    addPigCardList.add(pigCard);
+                                                }
+                                                pigCardList.addAll(addPigCardList); //需要以此加入
+                                                Log.e("TODO 请求新数据", sows_data );
+                                                int nowNum = pigCardList.size();
+                                                Log.e("TODO 请求新数据", " " +nowNum );
+                                                int totalNum = jsonObject.getInt("Total");
+                                                Log.e("TODO 请求新数据", " " +totalNum );
+                                                if(nowNum >= totalNum) haveSowData = false;
+                                                currentPage ++;
+                                                //footerLoadProgress.setVisibility(View.INVISIBLE);
+                                                Log.e("TODO 请求新数据", "qqqqqqqqqqq3" );
+
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                            isLoading = false;
+                                        }
+                                    });
                                 }
                             }//if
 
@@ -318,10 +391,4 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
     }//
 
 
-    @Override
-    public boolean dispatchTouchEvent(MotionEvent ev) {
-        //Log.e("touch", ""+ ev.getRawY());
-        //touchY = (int) ev.getRawY();
-        return super.dispatchTouchEvent(ev);
-    }
 }//end

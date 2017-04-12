@@ -1,5 +1,10 @@
 package com.ustcerqiu.pigdoc;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.util.List;
+
 /**
  * Created by kkwang on 3/11/2017.
  */
@@ -82,4 +87,21 @@ public class Sow {
     public void setEntryday(String entryday){
         this.entryday = entryday;
     }
-}
+
+
+    //sow与json数据间的转化
+    //jsonData是一个纯的json数组，并且里面的key和Sow中属性名称相同；
+    static public List<Sow> jsonToSowList(String jsonData){
+        Gson gson = new Gson();
+        List<Sow> SowList = null;
+        try{
+            SowList = gson.fromJson(jsonData, new TypeToken<List<Sow>>(){}.getType());
+        }catch (Exception err){
+            err.printStackTrace();
+        }
+        return SowList;
+    } //jsonToSowList
+
+
+
+}//sow
