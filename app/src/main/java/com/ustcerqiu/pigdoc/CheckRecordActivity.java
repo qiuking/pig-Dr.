@@ -210,7 +210,6 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                 pigCardList.add(pigCard);
             }
             currentPage ++;
-            Log.e("xxx", "parseSowXXXXXXXXXXXXXXXXXXXX: "+currentPage);
             /*PigCard pigCard; // = new PigCard();
             Log.e("xxx", "parseSow: "+currentPage);
             for(int i=0;i<jsonArray.length();i++) {
@@ -306,7 +305,8 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                             if(lp.height>250) {
                                 //footerLoadProgress.setVisibility(View.VISIBLE); //高度最低限制
                                 //footerLoadText.setVisibility(View.GONE);
-                                if(! isLoading) {
+                                if(!haveSowData) footerLoadText.setText("已经没有了");
+                                if(! isLoading && haveSowData) {
                                     //
                                     isLoading = true;
                                     String address = ip1 + "CurrentPage=" + currentPage + "&&PageLimit=" + pageLimit;
@@ -321,7 +321,6 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                                             footerLoadText.setTextSize(12);
                                             footerLoadText.setText("加载失败。。。");
                                             isLoading = false;
-                                            Log.e("TODO 请求新数据", "qqqqqqqqqqqqqqqqq1 " );
                                         }
 
                                         @Override
@@ -329,7 +328,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                                             String responseData = response.body().string();
                                             PigCard pigCard;
                                             String sows_data = null;
-                                            Log.e("TODO 请求新数据", "qqqqqqqqqqq2 " );
+                                            //Log.e("XXXXXXX", "onResponse: "+ pigCardList.size() );
                                             try{
                                                 JSONObject jsonObject = new JSONObject(responseData);
                                                 sows_data = jsonObject.getString("sows");
@@ -340,15 +339,13 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                                                     addPigCardList.add(pigCard);
                                                 }
                                                 pigCardList.addAll(addPigCardList); //需要以此加入
-                                                Log.e("TODO 请求新数据", sows_data );
                                                 int nowNum = pigCardList.size();
-                                                Log.e("TODO 请求新数据", " " +nowNum );
                                                 int totalNum = jsonObject.getInt("Total");
-                                                Log.e("TODO 请求新数据", " " +totalNum );
-                                                if(nowNum >= totalNum) haveSowData = false;
+                                                if(nowNum >= totalNum) {
+                                                    haveSowData = false;
+                                                }
                                                 currentPage ++;
                                                 //footerLoadProgress.setVisibility(View.INVISIBLE);
-                                                Log.e("TODO 请求新数据", "qqqqqqqqqqq3" );
 
                                             }catch (Exception e){
                                                 e.printStackTrace();
