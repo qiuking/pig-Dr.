@@ -47,6 +47,9 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
     //ip request
     String ip1 = "http://180.76.148.62:8888/v1/sows?";
     Boolean haveSowData = true; //标记是否还有数据可刷新
+    String ipStates = "http://180.76.148.62:8888/v1/states";
+    String[] stateArray; //用以存放状态，注意了 第0项为 全部，表示不筛选
+    int nowStateIndex = 0;
 
     //
 
@@ -71,8 +74,8 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                 break;
             case R.id.group_selected: //select the group
                 final TextView selectedGroup = (TextView) findViewById(R.id.group_selected_text);
-                final int nowId = 0;
-                final String[] dpValues = {"全  部","怀孕","哺乳","断奶空怀","反情空怀","B超鉴定空怀","流产空怀","后备母猪","后备第一次反情","后备第二次反情","公猪","已离场公猪"};
+                final int nowId = nowStateIndex;
+                final String[] dpValues = stateArray; //{"全  部","怀孕","哺乳","断奶空怀","反情空怀","B超鉴定空怀","流产空怀","后备母猪","后备第一次反情","后备第二次反情","公猪","已离场公猪"};
                 selectedGroup.setText(dpValues[nowId]);
                 mCom.mDialog mDialog = mCom.generateBottomNumberPickerDialog(this, dpValues, nowId , new mCom.mDialogReturnListener(){
                     @Override
@@ -174,6 +177,29 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
 
         //set the search icons
         LinearLayout selectGroupIcon = (LinearLayout) findViewById(R.id.group_selected);
+        TextView selectedGroup = (TextView) findViewById(R.id.group_selected_text);
+        //get states group
+        HttpUtil.sendOkHttpRequest(ipStates, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) { e.printStackTrace(); }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String responseData = response.body().string();
+                try {
+                    JSONObject jsonObject = new JSONObject(responseData);
+                    JSONArray stateJsonArray = jsonObject.getJSONArray("states");
+                    stateArray = new String[stateJsonArray.length()+1]; //申明内容；
+                    stateArray[0] = "全  部";
+                    for(int i=1; i< stateJsonArray.length()+1; i++){
+                        jsonObject = stateJsonArray.getJSONObject(i-1);
+                        stateArray[i] = jsonObject.getString("name");
+                    }
+                }catch (Exception e){
+                    e.printStackTrace();
+                }
+            }
+        });
         selectGroupIcon.setOnClickListener(this);
 
         //setOnClickListener (whole page left)
@@ -194,14 +220,14 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
 
     }//onCreate
 
+    ////#######################################################################/////////
+    /////////////////////////////////////////////////////////////////
 
     // parse sow
     private void parseSow(String jsonData){
         try{
             JSONObject jsonObject = new JSONObject(jsonData);
             String sows_data = jsonObject.getString("sows");
-           //JSONArray jsonArray = new JSONArray(sow_info);
-           // Gson gson = new Gson();
             pigCardList = new ArrayList<>();
             List<Sow> sowList = Sow.jsonToSowList(sows_data);
             PigCard pigCard;
@@ -210,20 +236,6 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                 pigCardList.add(pigCard);
             }
             currentPage ++;
-            /*PigCard pigCard; // = new PigCard();
-            Log.e("xxx", "parseSow: "+currentPage);
-            for(int i=0;i<jsonArray.length();i++) {
-                jsonObject = jsonArray.getJSONObject(i);
-                Sow sow = gson.fromJson(jsonObject.toString(), Sow.class);
-                pigCard = new PigCard(sow.getEarTag(), "母猪", sow.getCategory(), sow.getGestationalAge(), sow.getBirthday(), sow.getDormitory(), sow.getState(),"无");
-                pigCardList.add(pigCard); }
-            int nowNum = pigCardList.size();
-            int totalNum = jsonObject.getInt("Total");
-            if(nowNum >= totalNum) haveSowData = false;
-            currentPage ++;
-            Log.e("xxx", "parseSowXXXXXXXXXXXXXXXXXXXX: "+currentPage);
-          //  Gson gson = new Gson();
-          //  List<Sow> sowList = gson.fromJson(sow_info, new TypeToken<List<Sow>>(){}.getType()); */
         }catch (Exception e){
             e.printStackTrace();
         }
@@ -244,7 +256,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
         cardParentRecycleView.setAdapter(adapter);
         //add 增加动作监控
         final LinearLayout scrollFooter = (LinearLayout) findViewById(R.id.scroll_loading_footer);
-        final LinearLayout footerLoadProgress = (LinearLayout) findViewById(R.id.footer_loading_progress);
+        //final LinearLayout footerLoadProgress = (LinearLayout) findViewById(R.id.footer_loading_progress);
         final TextView footerLoadText = (TextView) findViewById(R.id.footer_loading_content);
         final LinearLayout.LayoutParams lp = (LinearLayout.LayoutParams) scrollFooter.getLayoutParams();
 
@@ -310,7 +322,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                                     //
                                     isLoading = true;
                                     String address = ip1 + "CurrentPage=" + currentPage + "&&PageLimit=" + pageLimit;
-                                    Log.e("address  ", address );
+                                    //Log.e("address  ", address );
                                     HttpUtil.sendOkHttpRequest(address, new Callback() {
                                         @Override
                                         public void onFailure(Call call, IOException e) {
@@ -328,14 +340,13 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                                             String responseData = response.body().string();
                                             PigCard pigCard;
                                             String sows_data = null;
-                                            //Log.e("XXXXXXX", "onResponse: "+ pigCardList.size() );
                                             try{
                                                 JSONObject jsonObject = new JSONObject(responseData);
                                                 sows_data = jsonObject.getString("sows");
                                                 List<Sow> sowList = Sow.jsonToSowList(sows_data);
                                                 List<PigCard> addPigCardList = new ArrayList<>();
                                                 for(Sow sow : sowList){
-                                                    pigCard = new PigCard(sow.getEarLack(), "母猪", sow.getCategory(), sow.getGestationalAge(), sow.getBirthday(), sow.getDormitory(), sow.getState(),"无");
+                                                    pigCard = new PigCard(sow.getEarTag(), "母猪", sow.getCategory(), sow.getGestationalAge(), sow.getBirthday(), sow.getDormitory(), sow.getState(),"无");
                                                     addPigCardList.add(pigCard);
                                                 }
                                                 pigCardList.addAll(addPigCardList); //需要以此加入
