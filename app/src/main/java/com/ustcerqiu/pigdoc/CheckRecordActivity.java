@@ -49,6 +49,7 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
     Boolean haveSowData = true; //标记是否还有数据可刷新
     String ipStates = "http://180.76.148.62:8888/v1/states";
     String[] stateArray; //用以存放状态，注意了 第0项为 全部，表示不筛选
+    int[] stateId;
     int nowStateIndex = 0;
 
     //
@@ -190,10 +191,13 @@ public class CheckRecordActivity extends BaseMinorClass implements View.OnClickL
                     JSONObject jsonObject = new JSONObject(responseData);
                     JSONArray stateJsonArray = jsonObject.getJSONArray("states");
                     stateArray = new String[stateJsonArray.length()+1]; //申明内容；
+                    stateId = new int[stateJsonArray.length()+1]; //纪录id，避免排序变化
                     stateArray[0] = "全  部";
+                    stateId[0] = 0;
                     for(int i=1; i< stateJsonArray.length()+1; i++){
                         jsonObject = stateJsonArray.getJSONObject(i-1);
                         stateArray[i] = jsonObject.getString("name");
+                        stateId[i] = jsonObject.getInt("id");
                     }
                 }catch (Exception e){
                     e.printStackTrace();
